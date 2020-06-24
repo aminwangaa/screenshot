@@ -1,5 +1,4 @@
 import React from 'react';
-import tdImg from "./img/tdImg.jpg"
 import catImg from "./img/cat.jpg"
 import "./screenshot.less"
 
@@ -53,8 +52,6 @@ class Screenshot extends React.Component {
 
             const diffX = startX - imgBox.offsetLeft - mask.offsetLeft
             const diffY = startY - imgBox.offsetTop - mask.offsetTop
-            console.log(diffX)
-            console.log(diffY)
 
             if (
                 diffX > borderWidth &&
@@ -62,22 +59,17 @@ class Screenshot extends React.Component {
                 diffX < mask.clientWidth - borderWidth &&
                 diffY < mask.clientHeight - borderWidth
             ) {
-                console.log(LEFT_CENTER)
                 direction = LEFT_CENTER
             } else if (diffX <= borderWidth && diffY <= borderWidth) {
-                console.log(LEFT_TOP)
                 direction = LEFT_TOP
             } else if (diffX >= mask.clientWidth - borderWidth && diffY <= borderWidth) {
-                console.log(RIGHT_TOP)
                 direction = RIGHT_TOP
             } else if (diffX <= borderWidth && diffY >= borderWidth) {
-                console.log(LEFT_BOTTOM)
                 direction = LEFT_BOTTOM
             } else if (
                 diffX >= mask.clientWidth - borderWidth &&
                 diffY >= mask.clientHeight - borderWidth
             ) {
-                console.log(RIGHT_BOTTOM)
                 direction = RIGHT_BOTTOM
             }
 
