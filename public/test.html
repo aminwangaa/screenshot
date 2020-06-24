@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #container {
+            display: flex;
+            position: relative;
+        }
+        ul {
+            width: 100px;
+        }
+        li {
+            width: 80px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid #efefef;
+            margin-bottom: 20px;
+            list-style: none;
+            cursor: pointer;
+            user-focus: none;
+            user-select: none;
+        }
+        #box {
+            margin-left: 20px;
+            width: 400px;
+            height: 400px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <ul>
+            <li class="item">1</li>
+            <li class="item">2</li>
+            <li class="item">3</li>
+            <li class="item">4</li>
+            <li class="item">5</li>
+        </ul>
+        <div id="box">
+
+        </div>
+    </div>
+</body>
+<script>
+    let box = document.getElementById("box")
+    let items = document.getElementsByClassName("item")
+    items = Array.from(items)
+    let startLeft = 0
+    let startTop = 0
+    let startX = 0
+    let startY = 0
+    let diffX = 0
+    let diffY = 0
+    let mouseDown = false
+    let positionList = []
+    let rightList = []
+    const targetLeft = box.offsetLeft
+    const targetTop = box.offsetTop
+
+    let mousedown = function(e) {
+        mouseDown = true
+        startX = e.clientX
+        startY = e.clientY
+        startLeft = e.target.offsetLeft
+        startTop = e.target.offsetTop
+    }
+
+    let mousemove = function(e) {
+        const target = e.target
+        const key = target.getAttribute("key")
+        diffX = e.clientX - startX
+        diffY = e.clientY - startY
+
+        if (mouseDown) {
+            let moveX =  positionList[key].left + diffX
+            let moveY =   positionList[key].top + diffY
+            target.style.left = moveX + "px"
+            target.style.top = moveY + "px"
+            if (
+                moveX - targetLeft > 0 &&
+                moveX - targetLeft < box.clientWidth &&
+                moveY - targetTop > 0 &&
+                moveY - targetTop < box.clientHeight &&
+                !rightList.includes(key)
+            ) {
+                target.style.zIndex = key + 1
+                target.style.left = positionList[key].left + "px"
+                target.style.top = positionList[key].top + "px"
+                rightList.push(key)
+                box.innerHTML = rightList.map(i => ~~i + 1)
+                mouseDown = false
+            }
+        }
+
+    }
+
+    let mouseup = function(e) {
+        mouseDown = false
+    }
+
+    let mouseleave = function(e) {
+        mouseDown = false
+    }
+
+    items.map((i, k) => {
+        i.onmousedown = mousedown
+        i.onmousemove = mousemove
+        i.onmouseup = mouseup
+        i.onmouseleave = mouseleave
+        i.setAttribute("key", `${k}`)
+        let left = i.offsetLeft
+        let top = i.offsetTop
+        positionList.push({
+            left,
+            top
+        })
+    })
+    items.map((i, k) => {
+        i.style.position = "absolute"
+        i.style.top = positionList[k].top + "px"
+        i.style.left = positionList[k].left + "px"
+    })
+
+
+</script>
+</html>

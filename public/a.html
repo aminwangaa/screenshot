@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" style="background:#111" />
+
+<script>
+   const can = document.getElementById("canvas");
+   const ctx = can.getContext("2d");
+   let timer = null;
+   const winH = window.innerHeight;
+   const winW = window.innerWidth;
+
+   const rainDraw = () => {
+       can.height = winH;
+       can.width = winW;
+       const fontSize = 16;
+       const columns = Math.floor(winW / fontSize)
+       const arr = new Array(columns).fill(0)
+       const str = "01"
+
+       const draw = () => {
+           ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
+           ctx.fillRect(0, 0, winW, winH)
+           ctx.font = "700 " + fontSize + "px  微软雅黑";
+           ctx.fillStyle = "#00cc33";
+
+           for (let i = 0; i < columns; i++) {
+               const x = i * fontSize;
+               const y = arr[i] * fontSize
+               const index = Math.floor(Math.random() * str.length)
+               ctx.fillText(str[index], x, y)
+
+               if (y > winH && Math.random() > 0.98) {
+                   arr[i] = 0
+               }
+               arr[i]++
+           }
+       }
+
+       draw()
+       timer = setInterval(() => draw(), 17)
+   }
+
+   rainDraw();
+   window.onresize = () => {
+       timer = null
+       ctx.clearRect(0, 0, winW, winH)
+       rainDraw()
+   }
+</script>
+</body>
+</html>

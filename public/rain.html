@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" style="background:#111" />
+
+<script>
+    //获取画布对象
+    let can = document.querySelector("canvas");
+    //获取画布的上下文
+    let ctx = can.getContext("2d");
+    let timer = null
+    const rainDraw = () => {
+        //设置canvas的宽度和高度
+        can.width = window.innerWidth;
+        can.height = window.innerHeight;
+        //每个文字的字体大小
+        let fontSize = 16;
+        //计算列
+        let columns = Math.floor(window.innerWidth / fontSize);
+        //记录每列文字的y轴坐标
+        let arr = [];
+        //给每一个文字初始化一个起始点的位置
+        for (let i = 0; i < columns; i++) { // 列数
+            arr.push(0);
+        }
+        //运动的文字
+        let str = "01";
+
+        //绘画的函数
+        function draw() {
+            //布满全屏的黑色遮罩层
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; // 颜色覆盖
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            //给字体设置样式
+            ctx.font = "700 " + fontSize + "px  微软雅黑";
+            //给字体添加颜色
+            ctx.fillStyle = "#00cc33";
+            //写入画布中
+            for (let i = 0; i < columns; i++) {
+                let index = Math.floor(Math.random() * str.length);
+                let x = i * fontSize;
+                let y = arr[i] * fontSize;
+                // 看文字颜色消失的时候 看了半天  发现是层层覆盖~~
+                ctx.fillText(str[index], x, y);
+                // 当前的Y位置 开始写入数字 通过背景覆盖之前的  使上面的颜色文字消失
+                // 如果文字的Y轴坐标大于画布的高度，1/100*columns 概率将该文字的Y轴坐标重置为0
+                if (y >= can.height && Math.random() > 0.98) {
+                    arr[i] = 0;
+                }
+                // 文字Y轴坐标+1
+                arr[i]++;
+            }
+        }
+        draw();
+        timer = setInterval(draw,  17); // 控制文字下降的速度
+    }
+    rainDraw()
+
+    window.onresize = () => {
+        clearInterval(timer) // 清空定时器
+        // 清除画布内容
+        ctx.clearRect(0 ,0 , window.innerWidth, window.innerHeight)
+        rainDraw()
+    }
+</script>
+</body>
+</html>
